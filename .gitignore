@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.env
+
+# Virtual env
+venv/
+.env/
+
+# Data (DO NOT upload medical images)
+data/
+*.zip
+
+# Model weights
+*.pt
+*.pth
+
+# OS
+.DS_Store
