@@ -79,16 +79,22 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=20, help='Number of epochs')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
+    parser.add_argument('--num_workers', type=int, default=4, help='Number of data loader workers')
     parser.add_argument('--output_dir', type=str, default='checkpoints', help='Directory to save model checkpoints')
     
     args = parser.parse_args()
     
     # Device config
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
     print(f"Using device: {device}")
     
     # Data Loaders
-    train_loader, val_loader, _, class_counts = get_data_loaders(args.data_dir, batch_size=args.batch_size)
+    train_loader, val_loader, _, class_counts = get_data_loaders(args.data_dir, batch_size=args.batch_size, num_workers=args.num_workers)
     
     # Model Setup
     if args.model == 'simple_cnn':

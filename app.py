@@ -22,7 +22,13 @@ This AI model detects Pneumonia from Chest X-Ray images.
 # Sidebar
 st.sidebar.header("Model Settings")
 model_type = st.sidebar.selectbox("Choose Model Architecture", ["densenet121", "resnet18", "simple_cnn"])
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+if torch.cuda.is_available():
+    device = torch.device('cuda')
+elif torch.backends.mps.is_available():
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
 
 @st.cache_resource
 def load_model(model_type):

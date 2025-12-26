@@ -66,14 +66,20 @@ if __name__ == "__main__":
     parser.add_argument('--data_dir', type=str, required=True, help='Path to dataset directory')
     parser.add_argument('--model_path', type=str, required=True, help='Path to saved model checkpoint')
     parser.add_argument('--model_type', type=str, default='densenet121', choices=['simple_cnn', 'densenet121', 'resnet18'], help='Model architecture used')
+    parser.add_argument('--num_workers', type=int, default=4, help='Number of data loader workers')
     
     args = parser.parse_args()
-    
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  # Device config
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
     print(f"Using device: {device}")
     
     # Load Data
-    _, _, test_loader, _ = get_data_loaders(args.data_dir, batch_size=32)
+    _, _, test_loader, _ = get_data_loaders(args.data_dir, batch_size=32, num_workers=args.num_workers)
     
     # Load Model
     if args.model_type == 'simple_cnn':
